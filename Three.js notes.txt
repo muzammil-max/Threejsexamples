@@ -1,0 +1,1568 @@
+
+CLASS 01
+Three Js introduction
+------------------------
+WebGL
+
+It is a javascript API used to render(draw) triangles at very high speeds.
+Results are drawn on canvas ( a container which holds various elements like shapes lines texts and other elements)
+It uses GPU
+
+Drawing and its calculation are done by GPU and CPU
+
+Where GPU draws and the CPU calculates
+
+
+However CPU do calculation very fast one by one (depends on core)
+
+but GPU does calculation but little bit slower in parallel.
+
+For eg i want to draw a 3d model. Now we know that triangles are used to draw the  models and shapes. suppose that it has 1000 points so we GPU will have to calculate for 3000 points since triangles have 3 points also.
+
+This formula used to find the number of points to be calculate by GPU 
+
+3 x (no of points of 3d model)
+= 3n
+
+Once the model's points are well placed, the GPU needs to draw each visible pixel of those triangles. Yet again, the GPU will handle the thousands and thousands of pixels calculations in one go.
+
+Now u see that all of these are done in sequence of instruction just like in transformation we havre to follow a sruqunce of transformation to see the result therefore they are called shaders. In WebGL they are very complicated and drawing a single triangle takes 100 lines of code. The metadata to shaders are called matrix they define how the points can be placed and how they can be transformed (tramslate , reflection , stretch) by respect to camera .Moreover We also need to provide data to help colorize the pixels. If there is a light and the triangle is facing that light, it should be brighter than if the triangle isn't.
+
+Using webgl is like talking to GPU how to draw the model whether 2d or 3d
+
+THIS MAKES WEBGL SO HARD SO THREE JS COMES
+
+Three.js makes WEBGL simple
+
+THree js is above web gl
+
+--------------
+  THREE JS
+---------------  * If we want to go further we can use WebGL to make our shader and give our data to it!
+      \\
+      //
+      \\
+      //
+      \\
+---------------
+     WEB GL
+----------------
+
+
+
+CLASS 02
+
+Getting Started
+
+
+build tools:
+To load our rescource on web browser we use html. But sometimes three js models cant be loaded becose of security issues of browser there fore we use build tool. The most popular one is webpack but not loved by everyone so we use vite which is very fast to install and run & have less error/bugs prone.
+
+
+Terminal:
+(already know about terminal)
+
+Some commands for terminal
+
+cd is used to change the current directory
+ls is used to show the list of items in the directory
+pwd is used to show the path of the current directory
+
+
+to get started we have to install some of the packages
+
+npm i vite
+npm i three
+
+Create index.html file and then go to package.json and in the scripts section remoce the test the property and add new property
+
+1) "dev": "vite",
+ 2)   "build": "vite build"
+
+It should be like this
+
+{
+  "name": "class01",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "vite": "^5.3.1"
+  }
+}
+
+
+from this we can now run vite and vite build command for eg we can do
+
+npm run dev 
+This runs the vite we can change the name anytime we want !
+
+run the command 
+
+npm run dev
+
+THis will start vite from node modules.
+
+now the terminal will be using vite to start a local server so we cant do anything with terminal if we turn off the terminal / kill the terminal the website will also shutdown (server will shutdown)_
+
+
+now create a index.html file and on the body section add
+
+<script type = "module" src = "script.ts"></script>
+
+this will use the script of the ts and will show the result through vite.
+
+to use terminal we can create other terminal or just shutdown the current terminal by doing ctrl+c.
+
+now start the server by doing npm run dev
+
+
+import three js by doing
+
+import * as THREE from 'three'
+
+now save the type of three.js since we are using powerful language typescript!
+
+now if u do console.log(THREE) u will see too many classes and functions of three js
+
+
+
+HERE STARTS THE MAIN LECTURE;
+----------------------------
+
+
+
+-------------
+| THREE.JS |
+------------
+
+what we need in three.js
+
+1) Scene
+2) Objects
+3) camera
+4)Renderer
+
+
+
+Scene 
+it is a box where we put objects, elements , model . light and particles
+
+to create a scene we do 
+
+const myscene //any name = new THREE.Scene()
+
+Objects
+
+They are the things on the scene like primitive geometries(cubes, spheres, cuboid , cylinder) , light, particles and etc
+
+To make object we need to make mesh 
+
+Mesh is a combination of 3d model(shape) and material (how the shape looks) for eg red cube where red is material and cube is geometry/3d model
+
+
+to create a box do this
+
+const mybox = new THREE.BoxGeometry(x,y,z)
+
+now here 
+x is the length 
+y is the width
+z is the 3d heigh of the box
+
+i will just simply create a cube:
+
+const mybox = new THREE.BoxGeometry(1,1,1)
+
+now i have created geometry but i also need to add material so to add material we do
+
+const myMaterial = new THREE.MeshBasicMaterial( { color: <color code / color> } // here u can add color 
+
+here parameter is actually an object
+
+now since we have two things ready to be as so i will make them as mesh.
+
+the mesh function takes the geometry and material as parameter which we have already set. As we know we need to mesh to display !
+
+const myMesh =  new THREE.Mesh( <the geometry> , <material> )
+
+in my case my geometry is mybox and material is myMaterial
+
+const myMesh =  new THREE.Mesh( mybox,myMaterial )
+
+We have successfully created mesh but the mesh is not in scene we have to put our our cube in scene we have made i.e myScene so that it can be visible. so we do this
+
+scene.add( <name of mesh> )
+
+myScene.add(myMesh) // adds the mesh to my scene
+
+
+Camera:
+
+it is a main component where we view the our 3d world
+
+there are two main type of camera
+
+1) perspective camera
+2) orthographic camera
+
+
+1) Perspective Camera
+We have to two parameter in this camera
+
+i)first is field of view
+
+Field of View (FOV) is how your vision angle is . and express in degrees (check video)
+for eg ur seeing a ship through lens. Now u see that if the field angle is larger u can see the ship but it will be smaller but we can see vast objects , other ships , nearby lands in one view but they will be smaller but if the field angle is smaller u can see the inside of ship as the ship will be appear bigger but some of the other nearby scene may not be visible
+
+ii) Aspect ratio
+
+it is the ratio of width to height of the screen
+
+we can set the screen resolution with aspect ratio also
+
+if we want to set the screen in square form so we use 1:1 of aspect ratio. other wise increase the ratio increase the width ( numerator increases) and decreasing the ratio increases the height of the screen (denominator increases)
+
+Now first we need to create a object for the sizes where the properties are width and height! 
+
+
+we can also do separately but organize things is best
+
+to add camera we do 
+
+const mycamera =  new THREE.PerspectiveCamera( <FOV in angle> , <aspect ratio> ) 
+
+and then add the camera to the scene.
+
+scene.add (mycamera)
+
+
+now the last thing
+
+
+Renderer
+
+it purpose is to draw scene ( take picture of the scene) and put it on our canvas/page
+
+it takes scene from the camera point of view.
+
+now we either create a canvas and put the renderer on to it or we can make renderer to generate the scene and put on our page. ( the renderer create canvas)
+
+now to create canvas we do 
+
+const canvas = document.querySelector('canvas.webgl') //it fetches the canvas of webgl from html file we set.
+
+its basically the part where we inspect the canvas we get this lines highlighted
+
+<canvas class="webgl"> </canvas>
+
+cut in short we were actually creating canvas in html where it uses webgl 
+
+now finally we will be adding renderer.
+The renderer we'll be using is WebGL renderer
+
+do 
+
+
+const renderer = new THREE.WebGlRenderer( { canvas: canvas } ) 
+
+//here i passed the object so i can add multiple options in renderer like antialias any manynmore here We need to specify the canvas property corresponding to the <canvas> we added to the page.
+
+now set the size of renderer using .setSize(...)
+
+
+renderer.setSize( width and height)
+
+In my code its
+
+renderer.setSize(sizes.width,sizes.height)
+
+
+Now inspect and u see that ur canvas has been resized!
+
+now the last but not the least 
+
+We will be sending our renderer the scene and the camera where the scene is taken from the camera's point of view (POV).
+
+to do this write:
+
+here renderer is my constant where i have instantiate the render (webGl renderer)
+
+renderer.render(<your scene variable> , <your camera variable> )
+
+renderer.render (myscene,mycamera)
+
+
+now u can see that there is a black screen on the window
+
+actually by default the camera position is on the centre and on centre we also have cube there fore the camera is inside our cube therefore we cant see our cube!
+
+now we have to transformed the camera
+
+We can translate OUR camera using .position this is an object where we set the position of our camera 
+it takes three parameter which are:
+
+x position ( the x axis decide the horizontal position of camera,by default the positive x is towards right ( the value increases if we move camera to right)
+
+y position  ( the y axis decide the vertical position of camera, by default the pistive y is the towards going up)
+
+z position ( the z axis decide the in to  page and out of page  position of camera( Forward or backward ), the positive z is going backwards)
+
+
+-=-=-=-=-=
+Class 03
+-=-=-=-=-=
+
+Transformations
+----------------
+
+-> translation/position
+-> Scaling
+-> Rotation
+-> quaternation
+
+previously we did transformation but of camera but in this lesson we'll be doing transformation of Objects!
+
+here inheritance is made where the camera and mesh inherit the properties of object3D. Those properties are compiled in matrices through which GPU works on
+
+
+
+1) Position
+
+it has 3 properties x y and z
+
+just like in unity we move the object with group here in 3 js the object is in mesh. like our main object where we can apply transformations is mesh we cannot apply on the identifiers which are initiliaze with the geometry the same is with the material.
+
+Therefore it is only apply on mesh.
+
+
+
+now the direction of each axis is default or arbitrary (random)
+
+there are three axis of direction in 3.js
+
+1) y axis --> going up (+ve) or down (-ve)
+2) x axis --> going right (+ve) or left (-ve)
+3) z axis --> forward (+ve) or going  backward (-ve)  
+
+however we need to decide scales for eg making home so we decide the unit which is applicable to it like metres is used in making home just like we use km in making roads so it's up to you :)
+
+
+IMPORTTANT
+----------------
+
+The position must be set before .render because we know that render is taking a picture and viewing to us so if we set the pos after render the render will not take the data of position there fore transfo0rmation must be set before .render(...) 
+
+
+Tip
+When u created mesh set the position right after the creation of mesh and before adding to scene because again scene.add also means the same like taking picture. and since renderer uses scene and camera POV to draw things.
+
+vector3:
+
+It is a class in three js which defines the 3D vector. It is order of triplets represented in matrix. (0,0,0)
+                                 1,30,5
+
+defsault value is 0 for vector3(v3)
+
+
+since we know that vector means direction and magnitude so
+
+we can find the length (magnitude) if we console the mesh.posotion.length of mesh. 
+Vector is based on components x y and z (new) so the components decide the position of the mesh.
+
+
+here is code
+
+console.log(myMesh.position.length());
+it gives the lgnth b/w the centre of scene to position of object/mesh'
+
+
+.distanceTo
+
+we can also use console.log(myMesh.position.distanceTo(<x>));
+
+here x is the parameter which is basically the object. it gives the distance between the cube(mesh) to the object (x)  or any thing used as parameter we can set. for eg we can use it with camera as a parametr to find the distance b/w cube in scene to the camera. however there use must be in right places like if the camera is made in line 14 made u use console.log(myMesh.position.distanceTo(camera.position)); on line 12 so it will give error as we know ts reads line by line so it cannot 
+
+
+
+Normalize:
+
+
+The normalize is used to set the vector of the mesh and reduce until its 1.
+
+here's how u normalize it
+
+for eg i want to normalize the position of my mesh so i wil do this:
+
+mesh.position.normalize()
+
+
+.position.set(...)
+
+we can use it to update the x y and z of the mesh at once
+
+it takes three paramters x y and z wich will update the position of the cube.
+
+It can be useful in using it in  functions.
+
+for eg i have pos the mesh
+myMesh.position.x = 3;
+myMesh.position.y = 2;
+myMesh.position.z = 3;
+
+i want to update them so that x is 4 y is -2 and z is 5 so i will use
+
+mesh.position.set(4,-2,5)
+
+
+
+Axes Helper:
+
+wiith axes helper we can visualizeor 3dworld using this.
+to make this we do:
+
+const axeshelper = new THREE.AxesHelper(<x>);
+
+now since it also anobject sowe need to add it on our scene
+now here x is the parameter fir length of each stroke.
+
+scene.add(axeshelper)
+
+
+2) Scaling 
+
+In scaling we can change the scale of the mesh like we can squeeze the cube or streatch the cube with position. like we use x y and z again for scaling
+
+to scale we do
+
+mesh.scale.<axis> = <any number>
+
+here axis means x or y or z
+
+myMesh.scale.x = 3
+myMesh.scale.y = 0.5
+myMesh.scale.z = 4
+
+
+similarily we can also use .set(...) to set the scale of the mesh just like we did on position
+
+                 x y z
+myMesh.scale.set(4,1,5)
+
+
+3) Rotation 
+
+Updating one will automatically update others.
+
+we can rotate with rotating property or with quaternating
+
+but rn we will be discussing rotation 
+
+it is a bit hard 
+
+it has x and y and z 
+
+it is euler
+Euler angles describe a rotational transformation by rotating an object on its various axes in specified amounts per axis, and a specified axis order.
+
+imagine ur put the a stick on paper on the axis for e.g. if put the stick on the x direction of paper it will rotate like a BBQ stick .
+
+if u put it on direction it will move like a fan propeller but if put it on y direction it will rotate like a ceiling fan.
+
+Thats' how u get the knowledge of rotation
+
+u can imagine putting a stick through your object's  center in axis's direction and then rotating that object on that stick
+
+here roation is made using radians so the object is roatiing in y axis and u increment values so the object will complete it half cycle in 3.14 which is actually called pie it complete it half cycle and so twice of pie means whole cycle completed but this will not be noticed in cube if its half cycle of whole one cycle.
+
+
+we can use Math.PI which has value of pie (approx.)
+
+Is it easy? Yes, but when you combine those rotations, you might end up with strange results. Why? Because, while you rotate the x axis, you also change the other axes' orientation. The rotation applies in the following order: x, y, and then z. That can result in weird behaviors like one named gimbal lock when one axis has no more effect, all because of the previous ones.
+
+As we see it goes x then y and z so if ur playing FPS game when u rotate so with this methid u cant move using the preferred direction u want u have to move on x first then y and then z.
+
+The reason of this is that the axes get aligned.
+
+We can change this order by using the reorder(...) method object.rotation.reorder('YXZ')
+
+
+we have to re order to avoid gimble lock but remember that it always occurs in euler principle
+
+https://www.youtube.com/watch?v=zc8b2Jo7mno&ab_channel=GuerrillaCG
+|
+v
+Watch this
+
+
+lookat(...)
+
+
+this is used to set the position of the camera to the object like if i create a vector3 with some position the camera will change it centre as we know the centre of the camera is on the point where the axis line intersect (origin) / (0,0,0)
+
+Scene graphs
+
+U see we used some line of code to transform object. 
+What about the complex things like house or car model it would take days just to move objects hence we put them in groups and use position and roation or scale on those groups we have groups class which make it possible.
+
+
+do this
+
+
+const groupname =  new THREE.Group();
+
+scene.add(groupname);
+
+now lets remove the object and again create some cubes;
+
+New thing
+
+We can also initliaze geometry and material inside the mesh();
+
+like this 
+
+const cube1: any = new THREE.Mesh(
+  new THREE.BoxGeometry(1, 1, 1),
+  new THREE.MeshBasicMaterial({ color: "red" })
+);
+group.add(cube1);
+const cube2: any = new THREE.Mesh(
+  new THREE.BoxGeometry(1, 1, 1),
+  new THREE.MeshBasicMaterial({ color: "green" })
+);
+group.add(cube2);
+
+const cube3: any = new THREE.Mesh(
+  new THREE.BoxGeometry(1, 1, 1),
+  new THREE.MeshBasicMaterial({ color: "blue" })
+);
+group.add(cube3)
+
+
+we add the mesh to cube we can use group.position.x = <> to move the cubes at together
+
+
+-=-=-=-==-=-=-==-=-=-
+       CLASS 04
+-=-=-=-=-=-=-=-=-=-=-
+
+Animations:
+
+Animation is like doing stop motion
+
+-> Move the object
+-> Take a picture
+-> Move object a little bit more
+-> Take picture
+and so on
+
+move things
+then take picture
+
+
+
+
+how this process is done mostly fast like 60 pictures taken per second!
+
+in three js we need to update object and render on each frame.
+thus it is done on function , we call this function 
+
+window.requestAnimationFrame(...);
+
+
+
+
+requestAnimationFrame is to call the function (which will be doing animation) on each frame.
+
+so it calls function on each frame!
+
+
+actually it take callback function
+
+now we know that .render(...) draws the picture from camera POV so we need to put it in the function of tick
+then we can apply transformation on our cube when we need so that each frame is updated frame by frame 
+
+
+now we can apply tranfdormation but remember for eg
+
+in th function tick()
+we can set transformation like this
+
+myMesh.position.x += 0.01 --> this is correct way because it increases 0.01 units on pos x each frame
+ but dont use like this
+
+myMesh.position.x = 0.01 because itwill not increase the units but instead it will set the value to 
+0.01 each frame so it no use!!!
+
+take this code
+
+
+
+const tick = () => {
+  cube1.rotation.x += -0.03;
+  cube2.rotation.x += 0.09;
+  cube3.rotation.x += -0.1;
+  group.rotation.y += 0.6
+  group.position.y += 0.01
+  group.position.z += 0.1
+  
+  // group.rotation.z += 0.1
+
+  //transformations
+  // group.rotation.z += 0.09
+
+  // console.log("hello world");
+  //Renderer
+  renderer.render(myScene, myCamera);
+  window.requestAnimationFrame(tick);
+};
+tick();
+
+
+
+However the more framerate then faster the rotation.
+
+There fore different computer have diferenct rotation those iwth faster  PCs have faster rotation whil other 
+with slow PC have slower rotation so to fix this we use real Time
+
+
+However this affect the framerate
+
+
+
+We use Date.now() to get current time.
+However it shows the time in milliseconds ( all numbers)  since the 1970
+
+This is called Timestamp
+
+this is same for everyone regardless of framerate so we do animation using the current time
+
+the value will be large therefore we we'll be subtracting it from the first time so that we get smaller value
+
+we can just multiply it with an factor so that we can adjust the speed of transformation.
+
+first create a const time 
+
+const time = Date.now()
+
+now in the function tick()
+
+create constant 
+
+const currentime  Date.now()
+
+nnow create a delta time where we have to subract the currentime to time like this:
+
+const deltatime = currenttime - time
+
+now since we know that this function always and it's a block so the time must be update with currenttime
+now u think that it will be zero no it will be non zero as the time will increase always as we know Date.now 
+function intends to increase the numerical value of milli seconds.
+
+so we will update it with currenttime.
+
+
+let time =  Date.now()
+
+
+const tick = () => {
+
+ //time
+const current = Date.now()
+const deltaTime =  current -deltaTime
+time = current
+
+
+//Update transformations
+
+mesh.rotation.y += <value> * deltaTime // now here see that we can update it with any numerical value we
+want to but dont remove deltatime because it will run according to your system cores (ticks).
+
+
+
+
+We dont out 3d website to go too fast or too slow we want it to go at right speed like i again said different
+computer have different framerate so there might be speed diference so we need to adjust it according to the time.
+
+we can also use another methid by THREE js called clock()
+
+first intialize the clock with new THREE.Clock()
+
+const clock = new THREE.Clock();
+
+now we create another variable called elapsed time which get the time from the clock so 
+
+if we console.log it we can see that it get increment when clock  was initialize 
+
+if i refresh it , it will start from zero
+
+here is code 
+
+const elapsetime = clock.getElapsedTime()  //for elapse time
+
+now if i console log it we see that it incremenets 
+
+like this
+
+
+script..ts:124 0
+script..ts:124 0.03030000001192093
+script..ts:124 0.050300000011920934
+script..ts:124 0.06369999998807907
+script..ts:124 0.07489999997615814
+script..ts:124 0.08819999998807906
+script..ts:124 0.10480000001192093
+script..ts:124 0.1220999999642372
+script..ts:124 0.13849999999999998
+script..ts:124 0.15819999998807904
+script..ts:124 0.17149999999999999
+script..ts:124 0.1893000000119209
+script..ts:124 0.20589999997615813
+script..ts:124 0.2215999999642372
+script..ts:124 0.23780000001192092
+script..ts:124 0.2600999999642372
+script..ts:124 0.27380000001192095
+script..ts:124 0.2893999999761582
+script..ts:124 0.3073999999761582
+script..ts:124 0.32569999998807914
+script..ts:124 0.3390999999642373
+script..ts:124 0.3555999999642373
+script..ts:124 0.3706999999880792
+script..ts:124 0.38759999996423733
+script..ts:124 0.40450000000000014
+script..ts:124 0.42150000000000015
+script..ts:124 0.43769999998807924
+script..ts:124 0.4538999999761583
+script..ts:124 0.47089999997615833
+script..ts:124 0.48730000001192114
+script..ts:124 0.5043000000119211
+script..ts:124 0.5230999999642374
+script..ts:124 0.5376999999880793
+script..ts:124 0.5615000000000002
+script..ts:124 0.5930000000000002
+script..ts:124 0.6000999999642374
+script..ts:124 0.6073999999761582
+script..ts:124 0.6456999999880791
+script..ts:124 0.6668999999761582
+script..ts:124 0.669800000011921
+script..ts:124 0.7076999999880791
+script..ts:124 2.5328999999761583
+script..ts:124 2.5385999999642372
+script..ts:124 2.555899999976158
+script..ts:124 2.573300000011921
+script..ts:124 2.5903000000119207
+script..ts:124 2.615399999976158
+script..ts:124 2.631099999964237
+script..ts:124 2.6498000000119206
+script..ts:124 2.6628000000119205
+script..ts:124 2.6831999999880787
+script..ts:124 2.6931999999880785
+script..ts:124 2.7153999999761576
+script..ts:124 2.7288999999761576
+script..ts:124 2.7468000000119206
+script..ts:124 2.7623000000119204
+script..ts:124 2.7716999999880785
+script..ts:124 2.7999999999999994
+script..ts:124 2.8131999999880786
+script..ts:124 2.8216999999880787
+script..ts:124 2.838899999976158
+script..ts:124 2.868099999964237
+script..ts:124 2.88
+script..ts:124 2.8935999999642372
+script..ts:124 2.909800000011921
+script..ts:124 2.9265
+script..ts:124 2.945199999988079
+script..ts:124 2.954300000011921
+script..ts:124 2.9708000000119212
+script..ts:124 2.9948000000119213
+script..ts:124 3.0175000000000005
+script..ts:124 3.0283999999761586
+script..ts:124 3.0378000000119214
+script..ts:124 3.0576999999880794
+script..ts:124 3.0735
+script..ts:124 3.095199999988079
+script..ts:124 3.116899999976158
+script..ts:124 3.128099999964237
+script..ts:124 3.144599999964237
+script..ts:124 3.164300000011921
+script..ts:124 3.1785
+script..ts:124 3.191899999976158
+script..ts:124 3.2185999999642374
+script..ts:124 3.2285000000000004
+script..ts:124 3.2420000000000004
+script..ts:124 3.261099999964238
+script..ts:124 3.2780000000000005
+script..ts:124 3.2943000000119214
+script..ts:124 3.3041999999880796
+script..ts:124 3.3225000000000007
+script..ts:124 3.3390999999642377
+script..ts:124 3.3555000000000006
+script..ts:124 3.372399999976159
+script..ts:124 3.3875000000000006
+script..ts:124 3.4155000000000006
+script..ts:124 3.4236999999880795
+script..ts:124 3.4416999999880793
+script..ts:124 3.4536999999880793
+script..ts:124 3.4720000000000004
+script..ts:124 3.4955000000000003
+script..ts:124 3.5045999999642374
+script..ts:124 3.520399999976158
+script..ts:124 3.537099999964237
+script..ts:124 3.56
+script..ts:124 3.5705
+script..ts:124 3.588
+script..ts:124 3.604800000011921
+script..ts:124 3.6226999999880793
+script..ts:124 3.636699999988079
+script..ts:124 3.6555
+script..ts:124 3.6728000000119208
+script..ts:124 3.693699999988079
+script..ts:124 3.711099999964237
+script..ts:124 3.7233000000119207
+script..ts:124 3.7391999999880787
+script..ts:124 3.756699999988079
+script..ts:124 3.775599999964237
+script..ts:124 3.789899999976158
+script..ts:124 3.805599999964237
+script..ts:124 3.822300000011921
+script..ts:124 3.8395
+script..ts:124 3.857
+script..ts:124 3.8745999999642375
+script..ts:124 3.8890000000000002
+script..ts:124 3.9058999999761586
+script..ts:124 3.9238999999761583
+script..ts:124 3.9391999999880793
+script..ts:124 3.9553000000119214
+script..ts:124 3.9710000000000005
+script..ts:124 3.9908999999761585
+script..ts:124 4.006399999976159
+script..ts:124 4.02269999998808
+script..ts:124 4.04319999998808
+script..ts:124 4.054500000000001
+script..ts:124 4.07069999998808
+script..ts:124 4.0868999999761595
+script..ts:124 4.109800000011922
+script..ts:124 4.12219999998808
+script..ts:124 4.138599999964238
+script..ts:124 4.153399999976159
+script..ts:124 4.17219999998808
+script..ts:124 4.186899999976159
+script..ts:124 4.203500000000001
+script..ts:124 4.222899999976159
+script..ts:124 4.23669999998808
+script..ts:124 4.253599999964238
+script..ts:124 4.272599999964238
+script..ts:124 4.287000000000001
+script..ts:124 4.303300000011922
+script..ts:124 4.32269999998808
+script..ts:124 4.339500000000001
+script..ts:124 4.353399999976159
+script..ts:124 4.370099999964238
+script..ts:124 4.392599999964238
+script..ts:124 4.404099999964238
+script..ts:124 4.421800000011922
+script..ts:124 4.436500000000001
+script..ts:124 4.459099999964239
+script..ts:124 4.472599999964238
+script..ts:124 4.487099999964238
+script..ts:124 4.503300000011922
+script..ts:124 4.522099999964238
+script..ts:124 4.536500000000001
+script..ts:124 4.553300000011922
+script..ts:124 4.5716999999880805
+script..ts:124 4.589500000000001
+script..ts:124 4.605399999976159
+script..ts:124 4.62019999998808
+script..ts:124 4.638599999964239
+script..ts:124 4.661300000011923
+script..ts:124 4.670199999988081
+script..ts:124 4.68789999997616
+script..ts:124 4.703099999964239
+script..ts:124 4.724000000000002
+script..ts:124 4.747699999988081
+script..ts:124 4.763399999976159
+script..ts:124 4.7745000000000015
+script..ts:124 4.787099999964239
+script..ts:124 4.8048999999761595
+script..ts:124 4.821300000011922
+script..ts:124 4.836500000000001
+script..ts:124 4.853300000011922
+script..ts:124 4.869899999976159
+script..ts:124 4.886899999976159
+script..ts:124 4.903300000011922
+script..ts:124 4.920399999976159
+script..ts:124 4.942000000000001
+script..ts:124 4.953800000011922
+script..ts:124 4.971599999964239
+script..ts:124 4.987300000011922
+script..ts:124 5.012099999964239
+script..ts:124 5.020500000000001
+script..ts:124 5.038099999964238
+script..ts:124 5.058099999964238
+script..ts:124 5.070300000011922
+script..ts:124 5.0925999999642375
+script..ts:124 5.105300000011921
+script..ts:124 5.122899999976158
+script..ts:124 5.1365
+script..ts:124 5.159300000011921
+script..ts:124 5.1725
+script..ts:124 5.188199999988079
+script..ts:124 5.2035
+script..ts:124 5.222
+script..ts:124 5.236800000011922
+script..ts:124 5.255000000000001
+script..ts:124 5.271899999976159
+script..ts:124 5.299300000011922
+script..ts:124 5.307899999976159
+script..ts:124 5.31969999998808
+script..ts:124 5.344000000000001
+script..ts:124 5.355300000011922
+script..ts:124 5.37369999998808
+script..ts:124 5.392399999976159
+script..ts:124 5.405000000000001
+script..ts:124 5.41969999998808
+script..ts:124 5.439300000011922
+script..ts:124 5.463000000000001
+script..ts:124 5.472500000000001
+script..ts:124 5.486899999976159
+script..ts:124 5.511500000000001
+script..ts:124 5.520500000000001
+script..ts:124 5.536599999964238
+script..ts:124 5.55289999997616
+script..ts:124 5.570099999964238
+script..ts:124 5.588899999976159
+script..ts:124 5.603500000000001
+script..ts:124 5.621500000000001
+script..ts:124 5.643300000011922
+script..ts:124 5.657800000011922
+script..ts:124 5.672399999976159
+script..ts:124 5.688000000000001
+script..ts:124 5.705899999976158
+script..ts:124 5.722099999964238
+script..ts:124 5.737899999976158
+script..ts:124 5.75419999998808
+script..ts:124 5.770300000011922
+script..ts:124 5.795599999964238
+script..ts:124 5.804699999988079
+script..ts:124 5.822800000011921
+script..ts:124 5.837399999976158
+script..ts:124 5.859
+script..ts:124 5.870399999976158
+script..ts:124 5.886699999988079
+script..ts:124 5.904800000011921
+script..ts:124 5.920099999964237
+script..ts:124 5.9363999999761585
+script..ts:124 5.957199999988079
+script..ts:124 5.972599999964237
+script..ts:124 5.9915
+script..ts:124 6.009099999964238
+script..ts:124 6.0200000000000005
+script..ts:124 6.0365
+script..ts:124 6.055300000011921
+script..ts:124 6.075099999964237
+script..ts:124 6.087099999964237
+script..ts:124 6.103300000011921
+script..ts:124 6.121899999976158
+script..ts:124 6.136399999976158
+script..ts:124 6.153199999988079
+script..ts:124 6.169399999976158
+script..ts:124 6.186199999988079
+script..ts:124 6.207399999976158
+script..ts:124 6.221199999988079
+script..ts:124 6.236199999988079
+script..ts:124 6.260099999964237
+script..ts:124 6.27
+script..ts:124 6.28880000001192
+script..ts:124 6.303199999988078
+script..ts:124 6.331099999964237
+script..ts:124 6.339800000011921
+script..ts:124 6.354599999964237
+script..ts:124 6.369399999976158
+script..ts:124 6.386
+script..ts:124 6.4075
+script..ts:124 6.419699999988079
+script..ts:124 6.438
+script..ts:124 6.453199999988079
+script..ts:124 6.470899999976158
+script..ts:124 6.486199999988079
+script..ts:124 6.503199999988079
+script..ts:124 6.520899999976159
+script..ts:124 6.5380999999642375
+script..ts:124 6.5525999999642375
+script..ts:124 6.569599999964238
+script..ts:124 6.586399999976159
+script..ts:124 6.610599999964238
+script..ts:124 6.620000000000001
+script..ts:124 6.636099999964238
+script..ts:124 6.654300000011922
+script..ts:124 6.669199999988081
+script..ts:124 6.68839999997616
+script..ts:124 6.703199999988081
+script..ts:124 6.719599999964239
+script..ts:124 6.736699999988081
+script..ts:124 6.752399999976159
+script..ts:124 6.769500000000001
+script..ts:124 6.788599999964238
+script..ts:124 6.804399999976159
+script..ts:124 6.821800000011922
+script..ts:124 6.841099999964238
+script..ts:124 6.857800000011922
+script..ts:124 6.871399999976159
+script..ts:124 6.891800000011922
+script..ts:124 6.908399999976159
+script..ts:124 6.919899999976159
+script..ts:124 6.93619999998808
+script..ts:124 6.952399999976159
+script..ts:124 6.976800000011922
+script..ts:124 6.990500000000001
+script..ts:124 7.00269999998808
+script..ts:124 7.02119999998808
+script..ts:124 7.03819999998808
+script..ts:124 7.05319999998808
+script..ts:124 7.073500000000001
+script..ts:124 7.091099999964238
+script..ts:124 7.1110000000000015
+script..ts:124 7.122300000011922
+script..ts:124 7.141300000011922
+script..ts:124 7.154800000011922
+script..ts:124 7.16919999998808
+script..ts:124 7.1930000000000005
+script..ts:124 7.214300000011922
+script..ts:124 7.227800000011921
+script..ts:124 7.235899999976159
+script..ts:124 7.262300000011922
+script..ts:124 7.27369999998808
+script..ts:124 7.290199999988079
+script..ts:124 7.302099999964238
+script..ts:124 7.329800000011922
+script..ts:124 7.340399999976158
+script..ts:124 7.355099999964238
+script..ts:124 7.370300000011921
+script..ts:124 7.392399999976159
+script..ts:124 7.41469999998808
+script..ts:124 7.423599999964238
+script..ts:124 7.449599999964238
+script..ts:124 7.460000000000001
+script..ts:124 7.482500000000001
+script..ts:124 7.492500000000001
+script..ts:124 7.507800000011922
+script..ts:124 7.523099999964238
+script..ts:124 7.547899999976159
+script..ts:124 7.560500000000001
+script..ts:124 7.580800000011922
+script..ts:124 7.59669999998808
+script..ts:124 7.614399999976159
+script..ts:124 7.630699999988081
+script..ts:124 7.641599999964239
+script..ts:124 7.652899999976159
+script..ts:124 7.672399999976159
+script..ts:124 7.697800000011922
+script..ts:124 7.704500000000001
+script..ts:124 7.720099999964239
+script..ts:124 7.73689999997616
+script..ts:124 7.763599999964239
+script..ts:124 7.769000000000001
+script..ts:124 7.791500000000001
+script..ts:124 7.810300000011922
+script..ts:124 7.819899999976159
+script..ts:124 7.84269999998808
+script..ts:124 7.856099999964239
+script..ts:124 7.869199999988081
+script..ts:124 7.892599999964239
+script..ts:124 7.904000000000002
+script..ts:124 7.919300000011923
+script..ts:124 7.935500000000002
+script..ts:124 7.958699999988081
+script..ts:124 7.972199999988081
+script..ts:124 7.9860000000000015
+script..ts:124 8.002300000011923
+script..ts:124 8.018699999988081
+script..ts:124 8.03539999997616
+script..ts:124 8.056099999964239
+script..ts:124 8.06839999997616
+script..ts:124 8.085199999988081
+script..ts:124 8.102000000000002
+script..ts:124 8.118599999964239
+script..ts:124 8.135000000000002
+script..ts:124 8.159
+script..ts:124 8.168599999964238
+script..ts:124 8.186399999976159
+script..ts:124 8.202099999964238
+script..ts:124 8.223099999964239
+script..ts:124 8.23619999998808
+script..ts:124 8.252300000011923
+script..ts:124 8.268800000011924
+script..ts:124 8.294699999988081
+script..ts:124 8.302500000000002
+script..ts:124 8.320000000000002
+script..ts:124 8.33559999996424
+script..ts:124 8.35809999996424
+script..ts:124 8.369699999988082
+script..ts:124 8.389899999976162
+script..ts:124 8.402399999976161
+script..ts:124 8.419500000000003
+script..ts:124 8.438300000011925
+script..ts:124 8.455899999976161
+script..ts:124 8.47139999997616
+script..ts:124 8.49139999997616
+script..ts:124 8.50339999997616
+script..ts:124 8.519500000000003
+script..ts:124 8.535899999976161
+script..ts:124 8.553300000011923
+script..ts:124 8.57319999998808
+script..ts:124 8.587000000000002
+script..ts:124 8.602099999964238
+script..ts:124 8.619800000011923
+script..ts:124 8.640099999964239
+script..ts:124 8.65209999996424
+script..ts:124 8.67689999997616
+script..ts:124 8.690500000000002
+script..ts:124 8.70239999997616
+script..ts:124 8.720099999964239
+script..ts:124 8.735500000000002
+script..ts:124 8.75319999998808
+script..ts:124 8.77039999997616
+script..ts:124 8.79039999997616
+script..ts:124 8.80219999998808
+script..ts:124 8.823800000011921
+script..ts:124 8.8355
+script..ts:124 8.8525
+script..ts:124 8.869099999964236
+script..ts:124 8.88630000001192
+script..ts:124 8.901899999976157
+script..ts:124 8.91880000001192
+script..ts:124 8.93580000001192
+script..ts:124 8.95630000001192
+script..ts:124 8.975099999964236
+script..ts:124 8.985899999976157
+script..ts:124 9.002199999988077
+script..ts:124 9.018599999964236
+script..ts:124 9.035499999999999
+script..ts:124 9.053599999964236
+script..ts:124 9.078699999988078
+script..ts:124 9.091999999999999
+script..ts:124 9.107599999964236
+script..ts:124 9.121599999964236
+script..ts:124 9.137899999976156
+script..ts:124 9.151999999999997
+script..ts:124 9.168499999999998
+script..ts:124 9.186199999988077
+script..ts:124 9.206699999988077
+script..ts:124 9.21880000001192
+script..ts:124 9.23530000001192
+script..ts:124 9.251999999999999
+script..ts:124 9.269699999988077
+script..ts:124 9.285699999988077
+script..ts:124 9.304099999964235
+script..ts:124 9.318499999999998
+script..ts:124 9.340599999964235
+script..ts:124 9.354699999988076
+script..ts:124 9.375599999964235
+script..ts:124 9.391599999964235
+script..ts:124 9.411099999964236
+script..ts:124 9.421499999999998
+script..ts:124 9.438899999976156
+script..ts:124 9.462899999976155
+script..ts:124 9.474800000011918
+script..ts:124 9.495800000011918
+script..ts:124 9.508800000011918
+script..ts:124 9.521999999999997
+script..ts:124 9.542499999999997
+script..ts:124 9.557300000011917
+script..ts:124 9.570800000011918
+script..ts:124 9.585399999976154
+script..ts:124 9.612499999999995
+script..ts:124 9.624999999999995
+script..ts:124 9.635999999999994
+script..ts:124 9.652199999988072
+script..ts:124 9.671300000011914
+script..ts:124 9.690300000011915
+script..ts:124 9.713499999999994
+script..ts:124 9.721499999999994
+script..ts:124 9.743099999964231
+script..ts:124 9.752800000011915
+script..ts:124 9.768699999988073
+script..ts:124 9.785399999976152
+script..ts:124 9.801899999976152
+script..ts:124 9.817999999999994
+script..ts:124 9.835300000011916
+script..ts:124 9.852999999999994
+script..ts:124 9.868399999976152
+script..ts:124 9.893699999988073
+script..ts:124 9.903399999976152
+script..ts:124 9.920099999964231
+script..ts:124 9.945800000011914
+script..ts:124 9.964999999999993
+script..ts:124 9.976300000011914
+script..ts:124 9.99609999996423
+script..ts:124 10.010399999976151
+script..ts:124 195.42539999997615
+script..ts:124 195.43689999997616
+script..ts:124 195.45630000001194
+script..ts:124 195.47319999998808
+script..ts:124 195.49839999997616
+script..ts:124 195.51659999996423
+script..ts:124 195.53280000001192
+script..ts:124 195.54939999997615
+script..ts:124 195.56759999996422
+script..ts:124 195.58559999996422
+script..ts:124 195.5993000000119
+script..ts:124 195.61580000001192
+script..ts:124 195.6325
+script..ts:124 195.64959999996424
+script..ts:124 195.66589999997615
+script..ts:124 195.68239999997616
+script..ts:124 195.69959999996422
+script..ts:124 195.71599999999998
+script..ts:124 195.7325
+script..ts:124 195.75030000001192
+script..ts:124 195.76780000001193
+script..ts:124 195.7826999999881
+script..ts:124 195.79950000000002
+script..ts:124 195.81759999996427
+script..ts:124 195.83230000001197
+script..ts:124 195.84959999996428
+script..ts:124 195.86559999996427
+script..ts:124 195.8823999999762
+script..ts:124 195.89900000000003
+script..ts:124 195.91580000001196
+script..ts:124 195.93239999997618
+script..ts:124 195.94930000001196
+script..ts:124 195.96559999996427
+script..ts:124 195.98259999996426
+script..ts:124 195.99930000001194
+script..ts:124 196.0156999999881
+script..ts:124 196.03339999997618
+script..ts:124 196.04909999996426
+script..ts:124 196.06559999996426
+script..ts:124 196.08230000001194
+script..ts:124 196.09989999997617
+script..ts:124 196.11559999996425
+script..ts:124 196.13239999997617
+script..ts:124 196.14909999996425
+script..ts:124 196.16559999996426
+script..ts:124 196.18309999996427
+script..ts:124 196.1988999999762
+script..ts:124 196.21580000001197
+script..ts:124 196.2323999999762
+script..ts:124 196.24900000000002
+script..ts:124 196.2671999999881
+script..ts:124 196.28219999998808
+script..ts:124 196.29930000001193
+script..ts:124 196.31630000001192
+script..ts:124 196.3321999999881
+script..ts:124 196.34889999997617
+script..ts:124 196.36559999996425
+script..ts:124 196.38219999998807
+script..ts:124 196.39919999998807
+script..ts:124 196.4158000000119
+script..ts:124 196.43219999998806
+script..ts:124 196.4488000000119
+script..ts:124 196.4655999999642
+script..ts:124 196.48239999997614
+script..ts:124 196.4988000000119
+script..ts:124 196.51639999997613
+script..ts:124 196.53239999997612
+script..ts:124 196.54889999997613
+script..ts:124 196.56549999999996
+script..ts:124 196.58219999998803
+script..ts:124 196.59969999998805
+script..ts:124 196.61599999999996
+script..ts:124 196.63219999998805
+script..ts:124 196.64889999997612
+script..ts:124 196.66569999998805
+script..ts:124 196.6820999999642
+script..ts:124 196.69889999997613
+script..ts:124 196.71539999997614
+script..ts:124 196.73219999998807
+script..ts:124 196.7488000000119
+script..ts:124 196.76539999997613
+script..ts:124 196.7820999999642
+script..ts:124 196.79869999998803
+script..ts:124 196.8153999999761
+script..ts:124 196.83209999996419
+script..ts:124 196.848699999988
+script..ts:124 196.86589999997608
+script..ts:124 196.88209999996417
+script..ts:124 196.898699999988
+script..ts:124 196.91549999999992
+script..ts:124 196.932199999988
+script..ts:124 196.94899999999993
+script..ts:124 196.96530000001184
+script..ts:124 196.9819999999999
+script..ts:124 196.9989999999999
+script..ts:124 197.01539999997607
+script..ts:124 197.03209999996415
+script..ts:124 197.04869999998797
+script..ts:124 197.0653000000118
+script..ts:124 197.0823000000118
+script..ts:124 197.09869999998796
+script..ts:124 197.11539999997603
+script..ts:124 197.13199999999986
+script..ts:124 197.1490999999641
+script..ts:124 197.16549999999987
+script..ts:124 197.182399999976
+script..ts:124 197.19949999999986
+script..ts:124 197.21630000001178
+script..ts:124 197.23199999999986
+script..ts:124 197.24869999998793
+script..ts:124 197.26530000001176
+script..ts:124 197.281899999976
+script..ts:124 197.29859999996407
+script..ts:124 197.31530000001175
+script..ts:124 197.33209999996407
+script..ts:124 197.34859999996408
+script..ts:124 197.365899999976
+script..ts:124 197.38199999999983
+script..ts:124 197.39859999996406
+script..ts:124 197.41549999999984
+script..ts:124 197.431899999976
+script..ts:124 197.44859999996407
+script..ts:124 197.465399999976
+script..ts:124 197.481899999976
+script..ts:124 197.49849999999984
+script..ts:124 197.51619999998792
+script..ts:124 197.531899999976
+script..ts:124 197.54859999996407
+script..ts:124 197.56549999999984
+script..ts:124 197.58219999998792
+script..ts:124 197.60109999996408
+script..ts:124 197.6151999999879
+script..ts:124 197.63189999997599
+script..ts:124 197.64859999996406
+script..ts:124 197.6651999999879
+script..ts:124 197.68180000001172
+script..ts:124 197.69859999996405
+script..ts:124 197.71619999998788
+script..ts:124 197.73180000001173
+script..ts:124 197.7484999999998
+script..ts:124 197.76509999996404
+script..ts:124 197.7818000000117
+script..ts:124 197.7984999999998
+script..ts:124 197.81519999998787
+script..ts:124 197.8318000000117
+script..ts:124 197.84849999999977
+script..ts:124 197.865099999964
+script..ts:124 197.88180000001168
+script..ts:124 197.89849999999976
+script..ts:124 197.91509999996399
+script..ts:124 197.93230000001168
+script..ts:124 197.94849999999977
+script..ts:124 197.96580000001168
+script..ts:124 197.98169999998785
+script..ts:124 197.99839999997593
+script..ts:124 198.015099999964
+script..ts:124 198.03169999998784
+script..ts:124 198.04849999999976
+script..ts:124 198.0653999999759
+script..ts:124 198.08199999999974
+script..ts:124 198.09889999997588
+script..ts:124 198.11589999997588
+script..ts:124 198.13180000001165
+script..ts:124 198.14830000001166
+script..ts:124 198.16509999996399
+script..ts:124 198.18230000001168
+script..ts:124 198.19869999998784
+script..ts:124 198.21499999999975
+script..ts:124 198.23159999996398
+script..ts:124 198.24849999999975
+script..ts:124 198.26530000001168
+script..ts:124 198.2818999999759
+script..ts:124 198.29859999996398
+script..ts:124 198.3151999999878
+script..ts:124 198.33169999998782
+script..ts:124 198.34830000001165
+script..ts:124 198.36499999999972
+script..ts:124 198.38159999996395
+script..ts:124 198.39889999997587
+script..ts:124 198.41559999996394
+script..ts:124 198.43169999998779
+script..ts:124 198.4483000000116
+script..ts:124 198.4649999999997
+script..ts:124 198.48169999998777
+script..ts:124 198.4983000000116
+script..ts:124 198.51539999997584
+script..ts:124 198.53159999996393
+script..ts:124 198.5483000000116
+script..ts:124 198.56519999998775
+script..ts:124 198.58169999998776
+script..ts:124 198.59819999998777
+script..ts:124 198.61489999997585
+script..ts:124 198.63180000001162
+script..ts:124 198.6484999999997
+script..ts:124 198.6649999999997
+script..ts:124 198.68159999996394
+script..ts:124 198.6984999999997
+script..ts:124 198.71499999999972
+script..ts:124 198.73159999996395
+script..ts:124 198.74830000001162
+script..ts:124 198.76489999997585
+script..ts:124 198.78149999999968
+script..ts:124 198.7980999999639
+script..ts:124 198.8150999999639
+script..ts:124 198.83149999999966
+script..ts:124 198.8483000000116
+script..ts:124 198.86489999997582
+script..ts:124 198.88149999999965
+script..ts:124 198.89819999998772
+script..ts:124 198.91480000001155
+script..ts:124 198.93180000001155
+script..ts:124 198.94849999999963
+script..ts:124 198.96469999998772
+script..ts:124 198.98149999999964
+script..ts:124 198.99809999996387
+script..ts:124 199.01480000001155
+script..ts:124 199.03149999999962
+script..ts:124 199.04809999996385
+
+
+
+
+now we can update transformation of 
+
+by assingning any transformation property value to the elapsetime variable we made
+
+this is the rotation of cube in one second like the cube is making rotation on 1 sec
+
+now it follows sped with m/s
+
+now if we want to complete one revolution per second we multiply elapsetime to Math.PI following with 2
+
+since we know half of the revolution is pie so twice of revolution is called twice of pie
+
+now implement this
+
+now use .sin / .cos and .tan
+
+re call the graph of trigonometry we can use it to make complex animations
+
+
+another method is that we can animate camera but we get same result ew can do this also
+
+ myCamera.position.y = Math.sin(elapsetime)
+  myCamera.position.x = Math.cos(elapsetime)
+  myCamera.lookAt(group.position)
+
+now here we use look at the camera will move in circular direction it will put its main focus on the cubes position
+
+
+we can also getDelta() but it will mess up the logic of cclasses so i will suggest u to not use it
+
+Library
+
+we can also use libraries to use them in animations
+one of them is called GSAP
+
+There are many ways of using GSAP, and we could dedicate an entire course to it, but it is not the goal of this course. We will simply create a tween to test things out. If you already know how to use GSAP, it works the same with Three.js.
+
+Comment the code related to the previous animations but keep the tick function with the render. Then you can create what we call a tween (an animation from A to B) using gsap.to(...):
+
+
+we use gsap.to ()
+in this we pass two arguments first is where to apply the animation and second what animation we want to apply
+it mst be always object.position because we ae actually apply animation to position or rotation or scale.
+it is in this format
+
+gsap.to (<object>.position, { duration : <num> , delay: <num> , axis(x or y or z) : <num> } );
+
+now here duration represents like hoow much time would it take for object to be in motion
+delay means that after how many seconds will the object start moving for example if the delay set is 4 sec so object will start moving after 4 seconds
+here x y and z means which axos wil move if we adjust the number like if we increase the value the speed will increase but to thier relative direction
+
+if the value is increasing in negative (magnitude is increasing but sign doesnot change) so it means that ob ject is now moving in negativedirection but very very fast.
+
+This property uses the principle of inertia
+
+-> through this we can set the sequence fo movements
+
+
+We can use within later to Animate in three.Js
+
+
+/**
+ * Animate
+ */
+gsap.to(mesh.position, { duration: 1, delay: 1, x: 2 })
+
+const tick = () =>
+{
+    // Render
+    renderer.render(scene, camera)
+
+    // Call tick again on the next frame
+    window.requestAnimationFrame(tick)
+}
+
+tick()
+
+
+
+GSAP has a built-in requestAnimationFrame, so you don't need to update the animation by yourself, but still, if you want to see the cube moving, you need to keep doing the renders of your scene on each frame.
+
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+           CLASS 04
+--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+CAMERAS:
+
+in previous lessons we learned about PerspectiveCamera
+
+but how ever there are other type of CAMERAS
+
+1) Array camera
+it is camera which renders from miultiple cameras on specific of render.
+
+2) Stereo camera
+ It is the camera that mimics the property of eyes like ... in this camera a scene are being rendered from 2 cameras to create a parallex effect 
+ It is best in use with the VR headset or Google Cardboard
+ 
+ .) -------------- []
+ 
+ .)--------------- []
+ 
+ 
+ 
+ 3) cube Camera
+ it is a camera which do 6 renders and each camera is it different positions.    
+ it best for shadow map and creating reflection 
+ 
+ This is best on the volumetric object like sphere , cubes and etc
+ 
+ 
+ 4) orthographic camera (very useful)
+ 
+	same as perspectivecamera but the object size will remain same regardless of the distance  from the object
+	it doesn't render the scene from perspective.
+	
+	
+5) perspectivecamera
+
+it render scene from perspective.
+
+
+
+perspectivecamera
+
+this camera takes 4 paramter but we use 2 so in this topic we'll be doing all of them.
+
+Now  lets talk about the FOV 
+
+it is based on field angle the more angle means the far the object but u can see many objects arround it.
+
+Less FOV means more close the object but u cant see the object around it.
+
+We use the field of view of 45-75 
+
+it is measureed in degrees
+
+
