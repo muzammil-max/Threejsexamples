@@ -1,0 +1,6 @@
+canvas.webgl {
+    background-color: rgb(205, 255, 207);
+    background: fixed;
+    z-index: 2;
+    scale: 100cm;
+}
