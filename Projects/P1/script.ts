@@ -1,11 +1,11 @@
 import * as THREE from "three";
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js"
-import {} from "three/examples/jsm/controls/"
-const canvas: any = document.querySelector("canvas.webgl");
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import "./style.css";
+const canvas = document.querySelector("canvas.webgl");
 const scene = new THREE.Scene();
 const sizes: any = {
-  width: 2000,
-  height: 1000,
+  width: window.innerWidth,
+  height: window.innerHeight,
 };
 const camera = new THREE.PerspectiveCamera(100, sizes.width / sizes.height);
 const box3 = new THREE.SphereGeometry(100);
@@ -26,9 +26,26 @@ const mat3 = new THREE.MeshBasicMaterial({ color: "green", wireframe: true });
 const torus = new THREE.Mesh(box2, mat3);
 const group1 = new THREE.Group();
 
-const controls = new OrbitControls(camera,canvas)
+window.addEventListener("dblclick", () => {
+  if (!document.fullscreenElement) {
+    canvas.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+});
+window.addEventListener("resize", () => {
+  console.log("Window resized");
+  sizes.width = window.innerWidth;
+  sizes.height = window.innerHeight;
+  camera.aspect = sizes.width / sizes.height;
+  camera.updateProjectionMatrix();
+  render.setSize(sizes.width, sizes.height);
+  render.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
+
+const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
-controls.enablePan = false
+controls.enablePan = false;
 const anotherbox = new THREE.SphereGeometry(50);
 const mat5 = new THREE.MeshBasicMaterial({ color: "magenta", wireframe: true });
 const sphere2 = new THREE.Mesh(anotherbox, mat5);
@@ -46,7 +63,7 @@ mesh.position.y = 2;
 scene.add(camera);
 camera.position.z = 50;
 
-scene.add(canvas);
+// scene.add(canvas);
 // scene.add(canvas);
 const render = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
 render.setSize(sizes.width, sizes.height);
@@ -66,10 +83,10 @@ function animate() {
   // mesh.rotation.z += 0.01
   // camera.position.z += Math.sin(clock.getElapsedTime()) * 2;
   // camera.lookAt(mesh.position)
-  sphere2.rotation.y += 0.01
+  sphere2.rotation.y += 0.01;
 
   requestAnimationFrame(animate);
   render.render(scene, camera);
-  controls.update()
+  controls.update();
 }
 animate();

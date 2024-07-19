@@ -1,11 +1,13 @@
+//@ts-ignore
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import "./style.css";
 
 /**
  * Base
  */
 // Canvas
-const canvas: any = document.querySelector("canvas.webgl");
+const canvas: Element = document.querySelector("canvas.webgl");
 
 // Scene
 const scene = new THREE.Scene();
@@ -22,9 +24,38 @@ scene.add(mesh);
  * Sizes
  */
 const sizes = {
-  width: 800,
-  height: 600,
+  width: window.innerWidth,
+  height: window.innerHeight,
 };
+//! Listens the resize of windows
+
+window.addEventListener("resize", () => {
+  console.log("Window resize detected.");
+
+  //// update sizes
+  sizes.width = window.innerWidth;
+  sizes.height = window.innerHeight;
+
+  //* camera
+  camera.aspect = sizes.width / sizes.height;
+  camera.updateProjectionMatrix();
+
+  //? updating renderer size
+  renderer.setSize(sizes.width, sizes.height);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
+
+//? Listens the doubleclick event
+
+window.addEventListener("dblclick", () => {
+  console.log("Double Click sensed.");
+
+  if (!document.fullscreenElement) {
+    canvas.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+});
 
 /**
  * Camera
@@ -51,7 +82,7 @@ const renderer = new THREE.WebGLRenderer({
   antialias: true,
 });
 renderer.setSize(sizes.width, sizes.height);
-
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 /**
  * Animate
  */
